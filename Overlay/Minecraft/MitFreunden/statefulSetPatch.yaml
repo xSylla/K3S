@@ -1,0 +1,9 @@
+- op: replace
+  path: /spec/template/spec/containers/0/ports/0/name
+  value: minecraft-je
+- op: add
+  path: /spec/template/spec/containers/0/ports/1
+  value:
+    name: "minecraft-be"
+    containerPort: 19132
+    protocol: UDP

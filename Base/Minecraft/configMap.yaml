@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minecraft-config
+data:
+  ANNOUNCE_PLAYER_ACHIEVEMENTS: "true"
+  ENABLE_RCON: "false"
+  EULA: "TRUE"
+  GUI: "FALSE"
+  LEVEL_TYPE: DEFAULT
+  MAX_PLAYERS: "10"
+  MEMORY: 2G
+  MODE: survival
+  OPS: xSylla
+  PVP: "true"
+  SPAWN_ANIMALS: "true"
+  SPAWN_MONSTERS: "true"
+  TYPE: VANILLA
+  TZ: Europe/Rome
