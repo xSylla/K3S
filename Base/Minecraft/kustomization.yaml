@@ -6,3 +6,4 @@ resources:
   - statefulSet.yaml
   - configMap.yaml
   - services.yaml
+  - networkpolicy.yaml
