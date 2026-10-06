@@ -20,6 +20,8 @@ spec:
         args:
           - |
             steamcmd +force_install_dir /data/scp +login anonymous +app_update 996560 validate +quit
+            export mod="/root/.config/SCP Secret Laboratory/LabAPI/plugins/7777"
+            mkdir -p "$mod"
             curl -L -o "$mod/RemoteKeycard-LabAPI.dll" "https://github.com/Unbistrackted/RemoteKeycard/releases/latest/download/RemoteKeycard-LabAPI.dll"
             curl -L -o "$mod/ScpSwap.LabAPI.dll" "https://github.com/tayjay/ScpSwap-LabAPI/releases/latest/download/ScpSwap.LabAPI.dll"
             cd /data/scp
