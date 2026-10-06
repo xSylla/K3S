@@ -33,9 +33,9 @@ spec:
         - name: udp
           containerPort: 7777
           protocol: UDP
-        #envFrom:
-        #- configMapRef:
-        #    name: scp-config
+        envFrom:
+        - configMapRef:
+            name: scp-config
         resources:
           limits:
             cpu: "2"
