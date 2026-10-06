@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: scp-server
+  namespace: scp-server
 spec:
   replicas: 1
   selector:
@@ -15,6 +16,12 @@ spec:
       containers:
       - name: scp-server
         image: docker.io/xsylla/scp-server:latest
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            steamcmd +force_install_dir /data/scp +login anonymous +app_update 996560 validate +quit
+            cd /data/scp
+            exec ./LocalAdmin 7777
         env:
         - name: ACCEPT_SCPSL_EULA
           value: "TRUE"
@@ -22,9 +29,11 @@ spec:
         - name: udp
           containerPort: 7777
           protocol: UDP
-        envFrom:
-        - configMapRef:
-            name: scp-config
+        #envFrom:
+        #- configMapRef:
+        #    name: scp-config
+        #- configMapRef:
+        #    name: scp-mod
         resources:
           limits:
             cpu: "2"
@@ -37,14 +46,14 @@ spec:
           mountPath: /data
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-        imagePullPolicy: Always #we use the same image tag, so whenever I update that image, this will force pull it (yeah that's not the best practice but I'm just setting up a game server, nothing seriously)
+        imagePullPolicy: IfNotPresent
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+      #securityContext:
+      #  runAsUser: 1000
+      #  runAsGroup: 1000
+      #  fsGroup: 1000
       schedulerName: default-scheduler
   volumeClaimTemplates:
   - kind: PersistentVolumeClaim
