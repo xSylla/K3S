@@ -1,40 +1,43 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: minecraft-server
+  name: scp-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: minecraft-server
+      app: scp-server
   template:
     metadata:
       labels:
-        app: minecraft-server
+        app: scp-server
     spec:
       containers:
-      - name: minecraft-server
-        image: itzg/minecraft-server:latest
+      - name: scp-server
+        image: docker.io/xsylla/scp-server:latest
+        env:
+        - name: ACCEPT_SCPSL_EULA
+          value: "TRUE"
         ports:
-        - name: minecraft
-          containerPort: 25565
-          protocol: TCP
+        - name: udp
+          containerPort: 7777
+          protocol: UDP
         envFrom:
         - configMapRef:
-            name: minecraft-config
+            name: scp-config
         resources:
           limits:
-            cpu: "1"
-            memory: 3Gi
+            cpu: "2"
+            memory: 2Gi
           requests:
             cpu: 500m
             memory: 1Gi
         volumeMounts:
-        - name: minecraft-data
+        - name: scp-data
           mountPath: /data
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always #we use the same image tag, so whenever I update that image, this will force pull it (yeah that's not the best practice but I'm just setting up a game server, nothing seriously)
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
@@ -47,7 +50,7 @@ spec:
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
-      name: minecraft-data
+      name: scp-data
     spec:
       accessModes:
       - ReadWriteOnce
@@ -58,7 +61,7 @@ spec:
       volumeMode: Filesystem
     status:
       phase: Pending
-  serviceName: minecraft-server
+  serviceName: scp-server
   podManagementPolicy: OrderedReady
   updateStrategy:
     type: RollingUpdate
