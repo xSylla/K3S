@@ -20,6 +20,8 @@ spec:
         args:
           - |
             steamcmd +force_install_dir /data/scp +login anonymous +app_update 996560 validate +quit
+            curl -L -o "$mod/RemoteKeycard-LabAPI.dll" "https://github.com/Unbistrackted/RemoteKeycard/releases/latest/download/RemoteKeycard-LabAPI.dll"
+            curl -L -o "$mod/ScpSwap.LabAPI.dll" "https://github.com/tayjay/ScpSwap-LabAPI/releases/latest/download/ScpSwap.LabAPI.dll"
             cd /data/scp
             exec ./LocalAdmin 7777
         env:
@@ -32,8 +34,6 @@ spec:
         #envFrom:
         #- configMapRef:
         #    name: scp-config
-        #- configMapRef:
-        #    name: scp-mod
         resources:
           limits:
             cpu: "2"
@@ -50,10 +50,6 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
-      #securityContext:
-      #  runAsUser: 1000
-      #  runAsGroup: 1000
-      #  fsGroup: 1000
       schedulerName: default-scheduler
   volumeClaimTemplates:
   - kind: PersistentVolumeClaim
