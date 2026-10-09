@@ -13,29 +13,40 @@ spec:
       labels:
         app: scp-server
     spec:
+      volumes:
+      - name: scp-config
+        configMap:
+          name: scp-config
+          defaultMode: 420
       containers:
       - name: scp-server
         image: docker.io/xsylla/scp-server:latest
         command: ["/bin/bash", "-c"]
         args:
-          - |
-            steamcmd +force_install_dir /data/scp +login anonymous +app_update 996560 validate +quit
-            export mod="/root/.config/SCP Secret Laboratory/LabAPI/plugins/7777"
-            mkdir -p "$mod"
-            curl -L -o "$mod/RemoteKeycard-LabAPI.dll" "https://github.com/Unbistrackted/RemoteKeycard/releases/latest/download/RemoteKeycard-LabAPI.dll"
-            curl -L -o "$mod/ScpSwap.LabAPI.dll" "https://github.com/tayjay/ScpSwap-LabAPI/releases/latest/download/ScpSwap.LabAPI.dll"
-            cd /data/scp
-            exec ./LocalAdmin 7777
-        env:
-        - name: ACCEPT_SCPSL_EULA
-          value: "TRUE"
+        - >
+          steamcmd +force_install_dir /data/scp +login anonymous +app_update
+          996560 validate +quit
+
+          export mod="/root/.config/SCP Secret Laboratory/LabAPI/plugins/7777"
+
+          mkdir -p "$mod"
+
+          curl -L -o "$mod/RemoteKeycard-LabAPI.dll"
+          "https://github.com/Unbistrackted/RemoteKeycard/releases/latest/download/RemoteKeycard-LabAPI.dll"
+
+          curl -L -o "$mod/ScpSwap.LabAPI.dll"
+          "https://github.com/tayjay/ScpSwap-LabAPI/releases/latest/download/ScpSwap.LabAPI.dll"
+
+          cd /data/scp
+
+          exec ./LocalAdmin 7777
         ports:
         - name: udp
           containerPort: 7777
           protocol: UDP
-        envFrom:
-        - configMapRef:
-            name: scp-config
+        env:
+        - name: ACCEPT_SCPSL_EULA
+          value: "TRUE"
         resources:
           limits:
             cpu: "2"
@@ -46,12 +57,21 @@ spec:
         volumeMounts:
         - name: scp-data
           mountPath: /data
+        - name: scp-config
+          mountPath: /root/.config/SCP Secret Laboratory/config/7777/config_gameplay.txt
+          subPath: config_gameplay.txt
+        - name: scp-config
+          mountPath: >-
+            /root/.config/SCP Secret
+            Laboratory/config/7777/config_remoteadmin.txt
+          subPath: config_remoteadmin.txt
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
+      securityContext: {}
       schedulerName: default-scheduler
   volumeClaimTemplates:
   - kind: PersistentVolumeClaim
